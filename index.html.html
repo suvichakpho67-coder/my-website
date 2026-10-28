@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAX SHOWROOM - AUTOMOTIVE SHOWROOM & DIGITAL STUDIO</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Kanit', 'Inter', 'sans-serif'],
+            serif: ['Cinzel', 'serif'],
+          },
+          colors: {
+            brand: {
+              gold: '#D4AF37',
+              goldLight: '#FFF2B2',
+              dark: '#08090C',
+              surface: '#111319',
+              card: '#161922',
+              border: '#242834',
+              accent: '#E5A93C'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #07080B;
+      color: #E2E8F0;
+      font-family: 'Kanit', sans-serif;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #08090C; }
+    ::-webkit-scrollbar-thumb { background: #242834; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3B4254; }
+
+    .glass-effect {
+      background: rgba(17, 19, 25, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .glass-card {
+      background: rgba(22, 25, 34, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFF5C0 0%, #D4AF37 50%, #AA7C11 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .no-select {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    input[type=range] {
+      accent-color: #D4AF37;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-black">
+
+  <!-- ========================================== -->
+  <!-- HEADER & NAVBAR -->
+  <!-- ========================================== -->
+  <header class="sticky top-0 z-40 glass-effect border-b border-gray-800/80 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Logo -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="resetFilters()">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 flex items-center justify-center shadow-lg shadow-amber-500/20">
+            <i class="fa-solid fa-car text-black text-xl"></i>
+          </div>
+          <div>
+            <span class="text-xl font-extrabold tracking-widest font-serif gold-gradient-text block uppercase">FAX SHOWROOM</span>
+            <span class="text-[10px] text-gray-400 tracking-widest block -mt-1 uppercase">Automotive Showroom & Digital Studio</span>
+          </div>
+        </div>
+
+        <!-- Action Tools -->
+        <div class="flex items-center space-x-3 sm:space-x-4">
+          
+          <!-- Folder Upload Button -->
+          <label for="folderInput" class="group relative cursor-pointer inline-flex items-center space-x-2 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 border border-gray-700 text-gray-200 hover:text-amber-400 font-medium text-xs sm:text-sm px-3.5 py-2.5 rounded-xl transition-all shadow-md active:scale-95">
+            <i class="fa-solid fa-folder-open text-amber-400 group-hover:rotate-12 transition-transform duration-300"></i>
+            <span class="hidden sm:inline">นำเข้าคลังรูปภาพ</span>
+            <span class="sm:hidden">นำเข้าไฟล์</span>
+            <input type="file" id="folderInput" webkitdirectory directory multiple class="hidden" onchange="handleFolderUpload(event)" />
+          </label>
+
+          <!-- Clear All Data Button (Protected by Admin Mode) -->
+          <button onclick="clearAllDataData()" class="p-2.5 bg-gray-800 hover:bg-red-900/40 border border-gray-700 hover:border-red-500/40 text-gray-400 hover:text-red-400 rounded-xl transition-all text-xs sm:text-sm" title="ล้างข้อมูลทั้งหมด">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+
+          <!-- Admin Mode Passcode Auth Button -->
+          <button id="adminAuthBtn" onclick="toggleAdminPasscodeModal()" class="inline-flex items-center space-x-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-amber-500/20 active:scale-95">
+            <i id="adminLockIcon" class="fa-solid fa-lock"></i>
+            <span id="adminBtnText">โหมดผู้ดูแลระบบ</span>
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- MAIN CONTENT CONTAINER -->
+  <!-- ========================================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+    <!-- Admin Banner Overlay Status -->
+    <div id="adminStatusBanner" class="hidden mb-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="text-xs sm:text-sm font-semibold text-amber-300">
+          <i class="fa-solid fa-user-shield mr-2"></i>เปิดใช้งานโหมดผู้ดูแลระบบ (Admin Access Active) - สามารถจัดการข้อมูล ปรับแต่งภาพ และลบไฟล์ได้ตามต้องการ
+        </span>
+      </div>
+      <button onclick="lockAdminMode()" class="text-xs bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 px-3 py-1.5 rounded-lg transition-colors">
+        <i class="fa-solid fa-lock mr-1"></i> ล็อกระบบ
+      </button>
+    </div>
+
+    <!-- Executive Hero Banner -->
+    <div class="relative rounded-3xl overflow-hidden mb-10 border border-gray-800/80 shadow-2xl">
+      <div class="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-transparent z-10"></div>
+      <img src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1600&q=80" alt="Hero Car" class="w-full h-64 sm:h-80 object-cover object-center" />
+      
+      <div class="absolute inset-0 z-20 flex flex-col justify-center px-6 sm:px-12 max-w-2xl">
+        <div class="flex items-center space-x-2 mb-3">
+          <span class="px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full text-xs font-semibold tracking-wide uppercase">
+            <i class="fa-solid fa-shield-halved mr-1"></i> Executive Portal
+          </span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-3 font-serif">
+          FAX SHOWROOM <br/><span class="gold-gradient-text">AUTOMOTIVE PORTAL</span>
+        </h1>
+        <p class="text-gray-400 text-xs sm:text-sm leading-relaxed mb-6">
+          ระบบสืบค้นและคัดกรองข้อมูลยานยนต์ตามแบรนด์ รุ่นย่อย และปีผลิต รองรับการนำเข้าไฟล์รูปภาพพร้อมระบบจัดเก็บข้อมูลภายในเครื่อง
+        </p>
+      </div>
+    </div>
+
+    <!-- Search Bar & Brand Filters -->
+    <section class="mb-8 space-y-4">
+      <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        
+        <!-- Live Search Input -->
+        <div class="relative flex-grow max-w-xl">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-amber-500/70">
+            <i class="fa-solid fa-magnifying-glass text-lg"></i>
+          </div>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="พิมพ์ค้นหาชื่อรุ่น แบรนด์ หรือปีผลิต..." 
+            oninput="handleSearch()"
+            class="w-full pl-11 pr-10 py-3.5 bg-brand-card border border-gray-800 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all text-sm sm:text-base shadow-inner"
+          >
+          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Main Brand Filter Buttons -->
+        <div class="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+          <button onclick="setBrand('all')" id="cat-all" class="cat-btn bg-amber-500 text-black border border-amber-500 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-200 shadow-md">
+            ทั้งหมด
+          </button>
+          <button onclick="setBrand('honda')" id="cat-honda" class="cat-btn bg-brand-card text-gray-300 border border-gray-800 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:border-amber-500/50">
+            Honda
+          </button>
+          <button onclick="setBrand('toyota')" id="cat-toyota" class="cat-btn bg-brand-card text-gray-300 border border-gray-800 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:border-amber-500/50">
+            Toyota
+          </button>
+          <button onclick="setBrand('isuzu')" id="cat-isuzu" class="cat-btn bg-brand-card text-gray-300 border border-gray-800 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:border-amber-500/50">
+            Isuzu
+          </button>
+          <button onclick="setBrand('mazda')" id="cat-mazda" class="cat-btn bg-brand-card text-gray-300 border border-gray-800 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:border-amber-500/50">
+            Mazda
+          </button>
+          <button onclick="setBrand('nissan')" id="cat-nissan" class="cat-btn bg-brand-card text-gray-300 border border-gray-800 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:border-amber-500/50">
+            Nissan
+          </button>
+          <button onclick="setBrand('byd')" id="cat-byd" class="cat-btn bg-brand-card text-gray-300 border border-gray-800 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:border-amber-500/50">
+            BYD / EV
+          </button>
+          <button onclick="setBrand('local')" id="cat-local" class="cat-btn bg-brand-card text-gray-300 border border-gray-800 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all duration-200 hover:border-amber-500/50">
+            📁 ไฟล์นำเข้า
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Secondary Sub-Filter Controls -->
+      <div class="flex flex-wrap items-center gap-3 pt-2 bg-brand-card/50 p-3.5 rounded-2xl border border-gray-800">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-filter text-amber-500 text-xs"></i>
+          <span class="text-xs text-gray-400 font-medium">คัดกรองแบบละเอียด:</span>
+        </div>
+
+        <!-- Select Model -->
+        <div class="flex items-center space-x-1">
+          <label class="text-xs text-gray-500">รุ่น:</label>
+          <select id="subModelSelect" onchange="handleSubModelChange()" class="bg-black/70 border border-gray-700 text-amber-300 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-500">
+            <option value="all">เลือกรุ่นทั้งหมด</option>
+          </select>
+        </div>
+
+        <!-- Select Year -->
+        <div class="flex items-center space-x-1">
+          <label class="text-xs text-gray-500">ปีผลิต:</label>
+          <select id="yearSelect" onchange="handleYearChange()" class="bg-black/70 border border-gray-700 text-amber-300 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-500">
+            <option value="all">ปีทั้งหมด (2015-2026)</option>
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+            <option value="2019">2019</option>
+            <option value="2018">2018</option>
+            <option value="2017">2017</option>
+            <option value="2016">2016</option>
+            <option value="2015">2015</option>
+          </select>
+        </div>
+
+        <button onclick="resetSubFilters()" class="text-xs text-gray-400 hover:text-amber-400 ml-auto transition-colors">
+          <i class="fa-solid fa-arrow-rotate-left mr-1"></i> รีเซ็ตตัวกรอง
+        </button>
+      </div>
+
+      <!-- Info & Display Bar -->
+      <div class="flex items-center justify-between text-xs sm:text-sm text-gray-400 px-1 pt-2">
+        <div id="resultCount">กำลังสืบค้นข้อมูล...</div>
+        <div class="flex items-center space-x-3">
+          <span class="text-xs text-gray-500">มุมมอง:</span>
+          <button onclick="setGridCols(3)" class="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300"><i class="fa-solid fa-grip-vertical"></i></button>
+          <button onclick="setGridCols(4)" class="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300"><i class="fa-solid fa-grid-2"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Grid -->
+    <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- RENDERED BY JS -->
+    </div>
+
+    <!-- Empty Result State -->
+    <div id="emptyState" class="hidden text-center py-20 px-4">
+      <div class="w-20 h-20 mx-auto mb-4 rounded-3xl bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-500 text-3xl shadow-xl">
+        <i class="fa-solid fa-car-burst"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-white mb-2">ไม่พบข้อมูลในระบบ</h3>
+      <p class="text-gray-400 text-sm max-w-md mx-auto mb-6">
+        ไม่พบรายการที่คุณระบุ คลิกปุ่ม "นำเข้าคลังรูปภาพ" ด้านบน เพื่ออัปโหลดข้อมูลภาพจากเครื่องของคุณ
+      </p>
+      <button onclick="resetFilters()" class="px-5 py-2.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white rounded-xl text-sm font-medium transition-colors">
+        รีเซ็ตการสืบค้น
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL 1: PASSCODE AUTHENTICATION -->
+  <!-- ========================================== -->
+  <div id="passcodeModal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative w-full max-w-md bg-brand-card border border-amber-500/30 rounded-3xl shadow-2xl p-6 text-center space-y-6">
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl shadow-lg">
+        <i class="fa-solid fa-user-lock"></i>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold text-white font-serif">ยืนยันรหัสผ่านผู้ดูแลระบบ</h3>
+        <p class="text-xs text-gray-400 mt-1">กรุณากรอกรหัสผ่านเพื่อเข้าสู่โหมดการจัดการข้อมูลและปรับแต่งไฟล์</p>
+        <p class="text-[11px] text-amber-400/80 mt-1">( รหัสผ่านเริ่มต้น: <span class="font-mono font-bold">1234</span> )</p>
+      </div>
+
+      <div>
+        <input 
+          type="password" 
+          id="passcodeInput" 
+          placeholder="กรอกรหัสผ่าน 4 หลัก" 
+          maxlength="10"
+          onkeydown="if(event.key==='Enter') verifyAdminPasscode()"
+          class="w-full text-center tracking-widest text-2xl py-3 bg-black/60 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-amber-500"
+        />
+        <p id="passcodeError" class="text-xs text-red-400 mt-2 hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i>รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</p>
+      </div>
+
+      <div class="flex space-x-3 pt-2">
+        <button onclick="toggleAdminPasscodeModal()" class="w-1/2 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs rounded-xl font-medium transition-colors">
+          ยกเลิก
+        </button>
+        <button onclick="verifyAdminPasscode()" class="w-1/2 py-2.5 bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold rounded-xl transition-colors shadow-lg shadow-amber-500/20">
+          ยืนยันสิทธิ์
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 2: 360° INTERACTIVE VIEWER -->
+  <!-- ========================================== -->
+  <div id="showroomModal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+    <div class="relative w-full max-w-5xl bg-brand-card border border-gray-800 rounded-3xl shadow-2xl overflow-hidden my-auto flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-800/80 bg-black/40">
+        <div class="flex items-center space-x-3">
+          <span id="modalCategoryBadge" class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full text-xs font-semibold uppercase">
+            BRAND / MODEL
+          </span>
+          <h2 id="modalTitle" class="text-lg sm:text-xl font-bold text-white truncate max-w-xs sm:max-w-md">Car Title</h2>
+        </div>
+        
+        <div class="flex items-center space-x-2">
+          <button id="modalAdminEditBtn" onclick="openStudioModalFromCurrent()" class="hidden px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs rounded-xl transition-colors">
+            <i class="fa-solid fa-pen-to-square mr-1"></i> จัดการข้อมูล (Studio Edition)
+          </button>
+          
+          <button onclick="closeModal()" class="w-9 h-9 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white flex items-center justify-center transition-colors">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="flex flex-col lg:flex-row flex-grow overflow-y-auto">
+        
+        <!-- Left Column: Visual Display / 360 View -->
+        <div class="lg:w-7/12 bg-black flex flex-col items-center justify-center p-6 relative border-b lg:border-b-0 lg:border-r border-gray-800">
+          
+          <!-- View Toggle Tabs -->
+          <div class="absolute top-4 left-4 z-20 flex bg-gray-900/90 p-1 rounded-xl border border-gray-800 shadow-md">
+            <button id="tabNormalView" onclick="switchModalTab('normal')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-amber-500 transition-all">
+              <i class="fa-solid fa-image mr-1"></i> มุมมองปกติ
+            </button>
+            <button id="tab360View" onclick="switchModalTab('360')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition-all">
+              <i class="fa-solid fa-arrows-spin mr-1"></i> มุมมอง 360° Interactive
+            </button>
+          </div>
+
+          <!-- Normal Image View -->
+          <div id="normalViewContainer" class="w-full h-72 sm:h-96 flex items-center justify-center">
+            <img id="modalMainImg" src="" alt="Car Detail" class="max-h-full max-w-full object-contain rounded-lg shadow-2xl" />
+          </div>
+
+          <!-- 360 Interactive View Container -->
+          <div id="viewer360Container" class="hidden w-full h-72 sm:h-96 flex flex-col items-center justify-center relative no-select cursor-grab active:cursor-grabbing">
+            <img id="img360" src="" alt="360 View Frame" class="max-h-full max-w-full object-contain pointer-events-none" />
+
+            <div id="dragHint" class="absolute inset-0 flex items-center justify-center pointer-events-none bg-black/40 text-white font-medium text-xs sm:text-sm rounded-lg transition-opacity duration-500">
+              <div class="bg-gray-900/95 px-4 py-2 rounded-full border border-gray-700 flex items-center space-x-2 shadow-2xl">
+                <i class="fa-solid fa-hand-pointer animate-bounce text-amber-400"></i>
+                <span>คลิกลากเมาส์ ซ้าย-ขวา เพื่อหมุนดูมุมมอง 360 องศา</span>
+              </div>
+            </div>
+
+            <div class="w-full px-8 mt-4">
+              <input type="range" id="slider360" min="0" max="35" value="0" class="w-full accent-amber-500 bg-gray-800 rounded-lg cursor-pointer" oninput="update360Frame(this.value)">
+              <div class="flex justify-between text-[11px] text-gray-500 mt-1">
+                <span>0°</span>
+                <span>90°</span>
+                <span>180°</span>
+                <span>270°</span>
+                <span>360°</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-xs text-gray-500 mt-2 text-center font-mono" id="imagePathLabel">filename.jpg</p>
+        </div>
+
+        <!-- Right Column: Specs & Info -->
+        <div class="lg:w-5/12 p-6 flex flex-col justify-between bg-brand-card">
+          <div class="space-y-6">
+            
+            <div>
+              <span class="text-xs font-semibold text-amber-400 uppercase tracking-widest">ข้อมูลจำเพาะ / SPECIFICATIONS</span>
+              <h3 id="modalDetailTitle" class="text-2xl font-bold text-white mt-1">Car Model</h3>
+              <p id="modalPrice" class="text-xl font-extrabold text-amber-400 mt-2">฿ 0</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <div class="bg-black/40 p-3 rounded-2xl border border-gray-800/80">
+                <span class="text-xs text-gray-500 block"><i class="fa-solid fa-calendar mr-1 text-amber-500"></i> ปีที่ผลิต</span>
+                <span id="specYear" class="text-gray-200 font-semibold text-sm">2023</span>
+              </div>
+              <div class="bg-black/40 p-3 rounded-2xl border border-gray-800/80">
+                <span class="text-xs text-gray-500 block"><i class="fa-solid fa-car-side mr-1 text-amber-500"></i> รุ่นย่อย</span>
+                <span id="specSubModel" class="text-gray-200 font-semibold text-sm">Civic</span>
+              </div>
+              <div class="bg-black/40 p-3 rounded-2xl border border-gray-800/80">
+                <span class="text-xs text-gray-500 block"><i class="fa-solid fa-gauge-high mr-1 text-amber-500"></i> ความเร็วสูงสุด</span>
+                <span id="specSpeed" class="text-gray-200 font-semibold text-sm">200 กม./ชม.</span>
+              </div>
+              <div class="bg-black/40 p-3 rounded-2xl border border-gray-800/80">
+                <span class="text-xs text-gray-500 block"><i class="fa-solid fa-charging-station mr-1 text-amber-500"></i> ระบบขับเคลื่อน</span>
+                <span id="specEngine" class="text-gray-200 font-semibold text-sm">1.5L Turbo</span>
+              </div>
+            </div>
+
+            <div>
+              <span class="text-xs font-semibold text-gray-400 uppercase tracking-widest block mb-2">ข้อมูลเพิ่มเติม</span>
+              <p id="modalDescription" class="text-gray-300 text-xs sm:text-sm leading-relaxed bg-black/20 p-3 rounded-xl border border-gray-800/50">
+                -
+              </p>
+            </div>
+
+          </div>
+
+          <div class="mt-6 pt-6 border-t border-gray-800 space-y-3">
+            <button onclick="bookDrive()" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-sm rounded-xl transition-all shadow-lg shadow-amber-500/20 active:scale-98">
+              <i class="fa-solid fa-paper-plane mr-2"></i> บันทึกข้อมูลรายการนี้
+            </button>
+            <button onclick="closeModal()" class="w-full py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs rounded-xl font-medium transition-colors">
+              ปิดหน้าต่าง
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL 3: CANVAS IMAGE EDITOR & ADMIN STUDIO -->
+  <!-- ========================================== -->
+  <div id="studioModal" class="fixed inset-0 z-50 hidden bg-black/95 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+    <div class="relative w-full max-w-6xl bg-brand-card border border-amber-500/40 rounded-3xl shadow-2xl overflow-hidden my-auto flex flex-col max-h-[92vh]">
+      
+      <!-- Studio Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-800 bg-black/60">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-amber-500 text-black flex items-center justify-center font-bold">
+            <i class="fa-solid fa-sliders"></i>
+          </div>
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-white uppercase tracking-wider">FAX DIGITAL STUDIO</h2>
+            <p class="text-[11px] text-gray-400">ระบบจัดการสเปก และประมวลผลไฟล์ภาพ (Admin Edition)</p>
+          </div>
+        </div>
+        
+        <button onclick="closeStudioModal()" class="w-9 h-9 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white flex items-center justify-center transition-colors">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Studio Body -->
+      <div class="flex flex-col lg:flex-row flex-grow overflow-y-auto">
+        
+        <!-- Left: Canvas Editor Workspace -->
+        <div class="lg:w-7/12 bg-black/80 p-6 flex flex-col items-center justify-between border-b lg:border-b-0 lg:border-r border-gray-800">
+          
+          <div class="w-full flex justify-between items-center mb-4 text-xs text-gray-400">
+            <span><i class="fa-solid fa-wand-magic-sparkles text-amber-400 mr-1"></i> เครื่องมือปรับแต่งรูปภาพ (Digital Canvas)</span>
+            <button onclick="resetImageFilters()" class="text-amber-400 hover:underline"><i class="fa-solid fa-rotate-left mr-1"></i> รีเซ็ตเอฟเฟกต์ภาพ</button>
+          </div>
+
+          <!-- Canvas Element -->
+          <div class="relative w-full h-64 sm:h-80 bg-gray-900 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-800">
+            <canvas id="editorCanvas" class="max-w-full max-h-full object-contain"></canvas>
+          </div>
+
+          <!-- Filter Presets & Quick Adjustments -->
+          <div class="w-full mt-6 space-y-4">
+            
+            <!-- Presets -->
+            <div>
+              <span class="text-xs font-semibold text-gray-400 block mb-2">ชุดสีสำเร็จรูป (Presets):</span>
+              <div class="grid grid-cols-4 gap-2">
+                <button onclick="applyPreset('normal')" class="px-2 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-xs font-medium">ปกติ</button>
+                <button onclick="applyPreset('cyber')" class="px-2 py-1.5 bg-gray-800 hover:bg-gray-700 text-amber-400 rounded-lg text-xs font-medium">Contrast High</button>
+                <button onclick="applyPreset('vivid')" class="px-2 py-1.5 bg-gray-800 hover:bg-gray-700 text-emerald-400 rounded-lg text-xs font-medium">Vivid Tone</button>
+                <button onclick="applyPreset('bw')" class="px-2 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-lg text-xs font-medium">Monochrome</button>
+              </div>
+            </div>
+
+            <!-- Manual Adjustment Sliders -->
+            <div class="grid grid-cols-2 gap-4 text-xs">
+              <div>
+                <label class="flex justify-between text-gray-400 mb-1">ความสว่าง (Brightness) <span id="valBrightness">100%</span></label>
+                <input type="range" id="filterBrightness" min="0" max="200" value="100" oninput="updateCanvasFilters()" class="w-full">
+              </div>
+              <div>
+                <label class="flex justify-between text-gray-400 mb-1">ความคมชัด (Contrast) <span id="valContrast">100%</span></label>
+                <input type="range" id="filterContrast" min="0" max="200" value="100" oninput="updateCanvasFilters()" class="w-full">
+              </div>
+              <div>
+                <label class="flex justify-between text-gray-400 mb-1">ความสดสี (Saturation) <span id="valSaturation">100%</span></label>
+                <input type="range" id="filterSaturation" min="0" max="200" value="100" oninput="updateCanvasFilters()" class="w-full">
+              </div>
+              <div>
+                <label class="flex justify-between text-gray-400 mb-1">ความเบลอ (Blur) <span id="valBlur">0px</span></label>
+                <input type="range" id="filterBlur" min="0" max="10" value="0" oninput="updateCanvasFilters()" class="w-full">
+              </div>
+            </div>
+
+            <!-- Flip / Rotate Buttons -->
+            <div class="flex space-x-2 pt-1">
+              <button onclick="flipCanvasHorizontal()" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-xs">
+                <i class="fa-solid fa-right-left mr-1"></i> กลับด้านแนวนอน
+              </button>
+              <button onclick="downloadEditedCanvas()" class="px-3 py-1.5 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 rounded-lg text-xs ml-auto">
+                <i class="fa-solid fa-download mr-1"></i> ส่งออกไฟล์ภาพ
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Right: Edit Metadata Form -->
+        <div class="lg:w-5/12 p-6 flex flex-col justify-between bg-brand-card">
+          <div class="space-y-4">
+            <span class="text-xs font-semibold text-amber-400 uppercase tracking-widest block">แก้ไขรายละเอียด (Spec Editor)</span>
+
+            <div>
+              <label class="text-xs text-gray-400 block mb-1">ชื่อรายการ / ชื่อไฟล์</label>
+              <input type="text" id="editCarName" class="w-full px-3 py-2 bg-black/50 border border-gray-700 rounded-xl text-white text-sm focus:border-amber-500 focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">แบรนด์</label>
+                <select id="editCarCategory" class="w-full px-3 py-2 bg-black/50 border border-gray-700 rounded-xl text-white text-xs focus:border-amber-500 focus:outline-none">
+                  <option value="honda">Honda</option>
+                  <option value="toyota">Toyota</option>
+                  <option value="isuzu">Isuzu</option>
+                  <option value="mazda">Mazda</option>
+                  <option value="nissan">Nissan</option>
+                  <option value="byd">BYD / EV</option>
+                  <option value="local">ไฟล์นำเข้า</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">รุ่นย่อย</label>
+                <input type="text" id="editCarSubModel" placeholder="เช่น Civic, City, Revo" class="w-full px-3 py-2 bg-black/50 border border-gray-700 rounded-xl text-white text-xs focus:border-amber-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">ปีรถ (ค.ศ.)</label>
+                <input type="number" id="editCarYear" placeholder="เช่น 2023" class="w-full px-3 py-2 bg-black/50 border border-gray-700 rounded-xl text-white text-xs focus:border-amber-500 focus:outline-none">
+              </div>
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">ราคาประเมิน</label>
+                <input type="text" id="editCarPrice" class="w-full px-3 py-2 bg-black/50 border border-gray-700 rounded-xl text-white text-xs focus:border-amber-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">ความเร็วสูงสุด</label>
+                <input type="text" id="editCarSpeed" class="w-full px-3 py-2 bg-black/50 border border-gray-700 rounded-xl text-white text-xs focus:border-amber-500 focus:outline-none">
+              </div>
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">เครื่องยนต์/ระบบขับเคลื่อน</label>
+                <input type="text" id="editCarEngine" class="w-full px-3 py-2 bg-black/50 border border-gray-700 rounded-xl text-white text-xs focus:border-amber-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div>
+              <label class="text-xs text-gray-400 block mb-1">คำอธิบายรายละเอียด</label>
+              <textarea id="editCarDesc" rows="3" class="w-full px-3 py-2 bg-black/50 border border-gray-700 rounded-xl text-white text-xs focus:border-amber-500 focus:outline-none"></textarea>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-gray-800 space-y-2">
+            <button onclick="saveStudioChanges()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black font-bold text-sm rounded-xl transition-all shadow-lg shadow-amber-500/20">
+              <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกข้อมูล
+            </button>
+            <button onclick="deleteCurrentCarItem()" class="w-full py-2 bg-red-600/20 hover:bg-red-600/40 border border-red-500/30 text-red-300 text-xs rounded-xl transition-colors">
+              <i class="fa-solid fa-trash-can mr-1"></i> ลบรายการนี้ออก
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Message -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-amber-500 text-black font-semibold text-sm px-5 py-3 rounded-2xl shadow-xl flex items-center space-x-2 pointer-events-none">
+    <i class="fa-solid fa-circle-check text-lg"></i>
+    <span id="toastMsg">แจ้งเตือน</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800/80 bg-black/60 py-8 mt-12 text-center text-xs text-gray-500">
+    <div class="max-w-7xl mx-auto px-4">
+      <p>© 2026 FAX SHOWROOM ENTERPRISE. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT APP LOGIC WITH INDEXEDDB & BRAND/MODEL SYSTEM -->
+  <!-- ========================================== -->
+  <script>
+    const brandModelsData = {
+      honda: ['Civic', 'City', 'HR-V', 'CR-V', 'Accord', 'BR-V', 'Jazz'],
+      toyota: ['Yaris', 'Yaris Ativ', 'Corolla Altis', 'Camry', 'Fortuner', 'Hilux Revo', 'Veloz', 'Corolla Cross'],
+      isuzu: ['D-Max', 'Mu-X'],
+      mazda: ['Mazda 2', 'Mazda 3', 'CX-3', 'CX-30', 'CX-5', 'CX-8'],
+      nissan: ['Almera', 'Navara', 'Kicks', 'Terra', 'March'],
+      byd: ['Dolphin', 'Atto 3', 'Seal', 'Sealion 6']
+    };
+
+    let carsList = [];
+    let currentBrand = 'all';
+    let currentSubModel = 'all';
+    let currentYear = 'all';
+    let searchQuery = '';
+    let isAdmin = false;
+    let currentSelectedCarId = null;
+    let isFlipped = false;
+    let currentImageElement = new Image();
+    let db = null;
+
+    // 1. INDEXEDDB SETUP FOR PERSISTENT STORAGE
+    function initDatabase() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open('FaxShowroomDB', 2);
+        request.onupgradeneeded = (e) => {
+          const dbInstance = e.target.result;
+          if (!dbInstance.objectStoreNames.contains('cars')) {
+            dbInstance.createObjectStore('cars', { keyPath: 'id' });
+          }
+        };
+        request.onsuccess = (e) => {
+          db = e.target.result;
+          resolve(db);
+        };
+        request.onerror = (e) => reject(e);
+      });
+    }
+
+    function saveCarToDB(car) {
+      if (!db) return;
+      const tx = db.transaction('cars', 'readwrite');
+      tx.objectStore('cars').put(car);
+    }
+
+    function deleteCarFromDB(id) {
+      if (!db) return;
+      const tx = db.transaction('cars', 'readwrite');
+      tx.objectStore('cars').delete(id);
+    }
+
+    function loadCarsFromDB() {
+      return new Promise((resolve) => {
+        if (!db) return resolve([]);
+        const tx = db.transaction('cars', 'readonly');
+        const req = tx.objectStore('cars').getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => resolve([]);
+      });
+    }
+
+    function clearAllDataData() {
+      if (!isAdmin) {
+        showToast('กรุณากรอกรหัสผ่านเพื่อเข้าสู่โหมดผู้ดูแลระบบก่อนลบข้อมูล');
+        toggleAdminPasscodeModal();
+        return;
+      }
+
+      if (confirm('คุณต้องการลบรูปภาพและข้อมูลทั้งหมดในระบบใช่หรือไม่?')) {
+        if (!db) return;
+        const tx = db.transaction('cars', 'readwrite');
+        tx.objectStore('cars').clear();
+        tx.oncomplete = () => {
+          carsList = [];
+          renderGallery();
+          showToast('ลบข้อมูลทั้งหมดเรียบร้อยแล้ว');
+        };
+      }
+    }
+
+    // 2. DOM LOADED INITIALIZATION
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        await initDatabase();
+        carsList = await loadCarsFromDB();
+      } catch (err) {
+        console.error('Failed to init IndexedDB:', err);
+      }
+      updateSubModelDropdown();
+      renderGallery();
+      setup360DragControls();
+    });
+
+    // 3. SUB-MODEL & BRAND FILTER LOGIC
+    function setBrand(brand) {
+      currentBrand = brand;
+      currentSubModel = 'all';
+
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.classList.remove('bg-amber-500', 'text-black', 'border-amber-500');
+        btn.classList.add('bg-brand-card', 'text-gray-300', 'border-gray-800');
+      });
+
+      const activeBtn = document.getElementById(`cat-${brand}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-brand-card', 'text-gray-300', 'border-gray-800');
+        activeBtn.classList.add('bg-amber-500', 'text-black', 'border-amber-500');
+      }
+
+      updateSubModelDropdown();
+      renderGallery();
+    }
+
+    function updateSubModelDropdown() {
+      const select = document.getElementById('subModelSelect');
+      select.innerHTML = '<option value="all">เลือกรุ่นทั้งหมด</option>';
+
+      let models = [];
+      if (currentBrand !== 'all' && brandModelsData[currentBrand]) {
+        models = brandModelsData[currentBrand];
+      } else {
+        const allModels = new Set();
+        carsList.forEach(c => { if(c.subModel) allModels.add(c.subModel); });
+        models = Array.from(allModels);
+      }
+
+      models.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.innerText = m;
+        select.appendChild(opt);
+      });
+
+      select.value = currentSubModel;
+    }
+
+    function handleSubModelChange() {
+      currentSubModel = document.getElementById('subModelSelect').value;
+      renderGallery();
+    }
+
+    function handleYearChange() {
+      currentYear = document.getElementById('yearSelect').value;
+      renderGallery();
+    }
+
+    function resetSubFilters() {
+      currentSubModel = 'all';
+      currentYear = 'all';
+      document.getElementById('subModelSelect').value = 'all';
+      document.getElementById('yearSelect').value = 'all';
+      renderGallery();
+    }
+
+    function resetFilters() {
+      clearSearch();
+      resetSubFilters();
+      setBrand('all');
+    }
+
+    // 4. RENDER GALLERY GRID
+    function renderGallery() {
+      const grid = document.getElementById('galleryGrid');
+      const emptyState = document.getElementById('emptyState');
+      const resultCount = document.getElementById('resultCount');
+
+      const filtered = carsList.filter(car => {
+        const matchesBrand = (currentBrand === 'all') || (car.category === currentBrand);
+        const matchesSubModel = (currentSubModel === 'all') || (car.subModel && car.subModel.toLowerCase() === currentSubModel.toLowerCase());
+        const matchesYear = (currentYear === 'all') || (car.year && car.year.toString() === currentYear.toString());
+        
+        const q = searchQuery.toLowerCase().trim();
+        const matchesSearch = !q || 
+          car.name.toLowerCase().includes(q) || 
+          car.category.toLowerCase().includes(q) ||
+          (car.subModel && car.subModel.toLowerCase().includes(q)) ||
+          (car.year && car.year.toString().includes(q)) ||
+          (car.tags && car.tags.some(t => t.toLowerCase().includes(q)));
+
+        return matchesBrand && matchesSubModel && matchesYear && matchesSearch;
+      });
+
+      resultCount.innerHTML = `พบผลลัพธ์ทั้งหมด <span class="text-amber-400 font-bold">${filtered.length}</span> รายการ`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = filtered.map(car => `
+        <div class="glass-card rounded-2xl overflow-hidden group hover:border-amber-500/50 transition-all duration-300 flex flex-col justify-between shadow-xl">
+          <div class="relative overflow-hidden h-48 bg-black/60 cursor-pointer" onclick="openShowroomModal('${car.id}')">
+            <img src="${car.image}" alt="${car.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            
+            <div class="absolute top-3 left-3 flex space-x-1">
+              <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase bg-black/70 backdrop-blur-md text-amber-400 border border-amber-500/30">
+                ${car.category}
+              </span>
+              ${car.year ? `<span class="px-2 py-1 rounded-lg text-[10px] font-bold bg-amber-500 text-black">${car.year}</span>` : ''}
+            </div>
+          </div>
+          
+          <div class="p-4 flex-grow flex flex-col justify-between">
+            <div>
+              <h3 class="text-base font-bold text-white group-hover:text-amber-400 transition-colors line-clamp-1">${car.name}</h3>
+              <p class="text-amber-400 font-extrabold text-sm mt-1">${car.price || 'ราคาติดต่อโชว์รูม'}</p>
+            </div>
+            
+            <div class="flex items-center space-x-2 mt-4 pt-3 border-t border-gray-800/80">
+              <button onclick="openShowroomModal('${car.id}')" class="flex-grow py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs rounded-xl font-medium transition-colors">
+                <i class="fa-solid fa-eye mr-1"></i> ดูโชว์รูม 360°
+              </button>
+              ${isAdmin ? `
+                <button onclick="openStudioModal('${car.id}')" class="p-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-xs transition-colors" title="จัดการข้อมูล / Studio">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 5. SEARCH & GRID LAYOUT HANDLERS
+    function handleSearch() {
+      searchQuery = document.getElementById('searchInput').value;
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (searchQuery) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      renderGallery();
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      searchQuery = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      renderGallery();
+    }
+
+    function setGridCols(cols) {
+      const grid = document.getElementById('galleryGrid');
+      if (cols === 3) {
+        grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6';
+      } else {
+        grid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6';
+      }
+    }
+
+    // 6. LOCAL FOLDER DIRECTORY UPLOAD WITH AUTO BRAND/MODEL DETECTION
+    function handleFolderUpload(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      let addedCount = 0;
+      const totalFiles = Array.from(files).filter(f => f.type.startsWith('image/')).length;
+
+      Array.from(files).forEach((file, index) => {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const base64Image = e.target.result;
+            const fileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+            const lowerName = fileName.toLowerCase();
+
+            let detectedCategory = 'local';
+            if (lowerName.includes('honda')) detectedCategory = 'honda';
+            else if (lowerName.includes('toyota')) detectedCategory = 'toyota';
+            else if (lowerName.includes('isuzu')) detectedCategory = 'isuzu';
+            else if (lowerName.includes('mazda')) detectedCategory = 'mazda';
+            else if (lowerName.includes('nissan')) detectedCategory = 'nissan';
+            else if (lowerName.includes('byd')) detectedCategory = 'byd';
+
+            let detectedSubModel = '';
+            const allSubModels = ['civic', 'city', 'hr-v', 'cr-v', 'accord', 'yaris', 'altis', 'camry', 'fortuner', 'revo', 'd-max', 'mu-x', 'almera', 'navara', 'dolphin', 'atto 3', 'seal'];
+            allSubModels.forEach(m => {
+              if (lowerName.includes(m)) detectedSubModel = m.toUpperCase();
+            });
+
+            let detectedYear = '';
+            const yearMatch = fileName.match(/20(1[5-9]|2[0-6])/);
+            if (yearMatch) detectedYear = yearMatch[0];
+
+            const carObj = {
+              id: `local-${Date.now()}-${index}`,
+              name: fileName,
+              category: detectedCategory,
+              subModel: detectedSubModel,
+              year: detectedYear,
+              price: 'รูปภาพอัปโหลด',
+              image: base64Image,
+              tags: [fileName, detectedCategory, detectedSubModel, detectedYear],
+              speed: 'N/A',
+              engine: 'N/A',
+              desc: `ไฟล์รูปภาพในเครื่อง Path: ${file.webkitRelativePath || file.name}`
+            };
+
+            carsList.unshift(carObj);
+            saveCarToDB(carObj);
+            addedCount++;
+
+            if (addedCount === totalFiles) {
+              updateSubModelDropdown();
+              renderGallery();
+              showToast(`นำเข้าและบันทึกไฟล์ภาพ ${addedCount} รายการสำเร็จ`);
+            }
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // 7. ADMIN AUTHENTICATION
+    function toggleAdminPasscodeModal() {
+      const modal = document.getElementById('passcodeModal');
+      const err = document.getElementById('passcodeError');
+      err.classList.add('hidden');
+      document.getElementById('passcodeInput').value = '';
+      modal.classList.toggle('hidden');
+    }
+
+    function verifyAdminPasscode() {
+      const code = document.getElementById('passcodeInput').value;
+      if (code === '1234') {
+        isAdmin = true;
+        toggleAdminPasscodeModal();
+        document.getElementById('adminStatusBanner').classList.remove('hidden');
+        document.getElementById('adminBtnText').innerText = 'โหมดผู้ดูแลระบบ (เปิดอยู่)';
+        document.getElementById('adminLockIcon').className = 'fa-solid fa-lock-open text-emerald-900';
+        document.getElementById('adminAuthBtn').className = 'inline-flex items-center space-x-2 bg-emerald-400 text-black font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-500/20 active:scale-95';
+        renderGallery();
+        showToast('เข้าสู่โหมดผู้ดูแลระบบเรียบร้อย');
+      } else {
+        document.getElementById('passcodeError').classList.remove('hidden');
+      }
+    }
+
+    function lockAdminMode() {
+      isAdmin = false;
+      document.getElementById('adminStatusBanner').classList.add('hidden');
+      document.getElementById('adminBtnText').innerText = 'โหมดผู้ดูแลระบบ';
+      document.getElementById('adminLockIcon').className = 'fa-solid fa-lock';
+      document.getElementById('adminAuthBtn').className = 'inline-flex items-center space-x-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all shadow-lg shadow-amber-500/20 active:scale-95';
+      renderGallery();
+      showToast('ระบบล็อกเรียบร้อยแล้ว');
+    }
+
+    // 8. SHOWROOM & 360 MODAL CONTROLS
+    function openShowroomModal(carId) {
+      const car = carsList.find(c => c.id === carId);
+      if (!car) return;
+      currentSelectedCarId = carId;
+
+      document.getElementById('modalTitle').innerText = car.name;
+      document.getElementById('modalDetailTitle').innerText = car.name;
+      document.getElementById('modalCategoryBadge').innerText = `${car.category.toUpperCase()} ${car.subModel ? '/ ' + car.subModel : ''}`;
+      document.getElementById('modalPrice').innerText = car.price || 'ราคาติดต่อโชว์รูม';
+      document.getElementById('specYear').innerText = car.year || 'N/A';
+      document.getElementById('specSubModel').innerText = car.subModel || 'N/A';
+      document.getElementById('specSpeed').innerText = car.speed || 'N/A';
+      document.getElementById('specEngine').innerText = car.engine || 'N/A';
+      document.getElementById('modalDescription').innerText = car.desc || '-';
+      document.getElementById('imagePathLabel').innerText = car.name;
+
+      document.getElementById('modalMainImg').src = car.image;
+      document.getElementById('img360').src = car.image;
+
+      const editBtn = document.getElementById('modalAdminEditBtn');
+      if (isAdmin) editBtn.classList.remove('hidden');
+      else editBtn.classList.add('hidden');
+
+      switchModalTab('normal');
+      document.getElementById('showroomModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('showroomModal').classList.add('hidden');
+    }
+
+    function switchModalTab(tab) {
+      const normalContainer = document.getElementById('normalViewContainer');
+      const container360 = document.getElementById('viewer360Container');
+      const tabNormal = document.getElementById('tabNormalView');
+      const tab360 = document.getElementById('tab360View');
+
+      if (tab === 'normal') {
+        normalContainer.classList.remove('hidden');
+        container360.classList.add('hidden');
+        tabNormal.className = 'px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-amber-500 transition-all';
+        tab360.className = 'px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition-all';
+      } else {
+        normalContainer.classList.add('hidden');
+        container360.classList.remove('hidden');
+        tab360.className = 'px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-amber-500 transition-all';
+        tabNormal.className = 'px-3 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition-all';
+        
+        setTimeout(() => {
+          const hint = document.getElementById('dragHint');
+          if (hint) hint.style.opacity = '0';
+        }, 3000);
+      }
+    }
+
+    function update360Frame(val) {
+      const img = document.getElementById('img360');
+      const rotateDeg = (val / 35) * 360;
+      img.style.transform = `rotateY(${rotateDeg * 0.2}deg)`;
+    }
+
+    function setup360DragControls() {
+      const container = document.getElementById('viewer360Container');
+      const slider = document.getElementById('slider360');
+      let isDragging = false;
+      let startX = 0;
+
+      container.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+      });
+
+      window.addEventListener('mouseup', () => { isDragging = false; });
+
+      container.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const deltaX = e.clientX - startX;
+        if (Math.abs(deltaX) > 5) {
+          let currVal = parseInt(slider.value);
+          let newVal = deltaX > 0 ? currVal + 1 : currVal - 1;
+          if (newVal > 35) newVal = 0;
+          if (newVal < 0) newVal = 35;
+          slider.value = newVal;
+          update360Frame(newVal);
+          startX = e.clientX;
+        }
+      });
+    }
+
+    function bookDrive() {
+      showToast('บันทึกข้อมูลเรียบร้อยแล้ว');
+    }
+
+    // 9. DIGITAL STUDIO CANVAS IMAGE EDITOR
+    function openStudioModal(carId) {
+      if (!isAdmin) {
+        showToast('กรุณากรอกรหัสผ่านเพื่อเข้าสู่โหมดผู้ดูแลระบบก่อน');
+        toggleAdminPasscodeModal();
+        return;
+      }
+
+      const car = carsList.find(c => c.id === carId);
+      if (!car) return;
+      currentSelectedCarId = carId;
+
+      document.getElementById('editCarName').value = car.name;
+      document.getElementById('editCarCategory').value = car.category;
+      document.getElementById('editCarSubModel').value = car.subModel || '';
+      document.getElementById('editCarYear').value = car.year || '';
+      document.getElementById('editCarPrice').value = car.price || '';
+      document.getElementById('editCarSpeed').value = car.speed || '';
+      document.getElementById('editCarEngine').value = car.engine || '';
+      document.getElementById('editCarDesc').value = car.desc || '';
+
+      currentImageElement = new Image();
+      currentImageElement.crossOrigin = 'anonymous';
+      currentImageElement.onload = () => {
+        resetImageFilters();
+        renderCanvas();
+      };
+      currentImageElement.src = car.image;
+
+      document.getElementById('studioModal').classList.remove('hidden');
+    }
+
+    function openStudioModalFromCurrent() {
+      closeModal();
+      if (currentSelectedCarId) {
+        openStudioModal(currentSelectedCarId);
+      }
+    }
+
+    function closeStudioModal() {
+      document.getElementById('studioModal').classList.add('hidden');
+    }
+
+    function renderCanvas() {
+      const canvas = document.getElementById('editorCanvas');
+      const ctx = canvas.getContext('2d');
+
+      canvas.width = currentImageElement.naturalWidth || 800;
+      canvas.height = currentImageElement.naturalHeight || 500;
+
+      const b = document.getElementById('filterBrightness').value;
+      const c = document.getElementById('filterContrast').value;
+      const s = document.getElementById('filterSaturation').value;
+      const blur = document.getElementById('filterBlur').value;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+
+      ctx.filter = `brightness(${b}%) contrast(${c}%) saturate(${s}%) blur(${blur}px)`;
+
+      if (isFlipped) {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+      }
+
+      ctx.drawImage(currentImageElement, 0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    }
+
+    function updateCanvasFilters() {
+      document.getElementById('valBrightness').innerText = document.getElementById('filterBrightness').value + '%';
+      document.getElementById('valContrast').innerText = document.getElementById('filterContrast').value + '%';
+      document.getElementById('valSaturation').innerText = document.getElementById('filterSaturation').value + '%';
+      document.getElementById('valBlur').innerText = document.getElementById('filterBlur').value + 'px';
+      renderCanvas();
+    }
+
+    function resetImageFilters() {
+      document.getElementById('filterBrightness').value = 100;
+      document.getElementById('filterContrast').value = 100;
+      document.getElementById('filterSaturation').value = 100;
+      document.getElementById('filterBlur').value = 0;
+      isFlipped = false;
+      updateCanvasFilters();
+    }
+
+    function applyPreset(preset) {
+      resetImageFilters();
+      if (preset === 'cyber') {
+        document.getElementById('filterBrightness').value = 110;
+        document.getElementById('filterContrast').value = 140;
+        document.getElementById('filterSaturation').value = 160;
+      } else if (preset === 'vivid') {
+        document.getElementById('filterBrightness').value = 105;
+        document.getElementById('filterContrast').value = 120;
+        document.getElementById('filterSaturation').value = 180;
+      } else if (preset === 'bw') {
+        document.getElementById('filterBrightness').value = 100;
+        document.getElementById('filterContrast').value = 130;
+        document.getElementById('filterSaturation').value = 0;
+      }
+      updateCanvasFilters();
+    }
+
+    function flipCanvasHorizontal() {
+      isFlipped = !isFlipped;
+      renderCanvas();
+    }
+
+    function downloadEditedCanvas() {
+      const canvas = document.getElementById('editorCanvas');
+      const link = document.createElement('a');
+      link.download = `fax-showroom-${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      showToast('ดาวน์โหลดรูปภาพสำเร็จ');
+    }
+
+    function saveStudioChanges() {
+      if (!isAdmin) return;
+
+      const car = carsList.find(c => c.id === currentSelectedCarId);
+      if (!car) return;
+
+      car.name = document.getElementById('editCarName').value;
+      car.category = document.getElementById('editCarCategory').value;
+      car.subModel = document.getElementById('editCarSubModel').value;
+      car.year = document.getElementById('editCarYear').value;
+      car.price = document.getElementById('editCarPrice').value;
+      car.speed = document.getElementById('editCarSpeed').value;
+      car.engine = document.getElementById('editCarEngine').value;
+      car.desc = document.getElementById('editCarDesc').value;
+
+      const canvas = document.getElementById('editorCanvas');
+      car.image = canvas.toDataURL('image/png');
+
+      saveCarToDB(car);
+      updateSubModelDropdown();
+      renderGallery();
+      closeStudioModal();
+      showToast('บันทึกการแก้ไขเรียบร้อยแล้ว');
+    }
+
+    function deleteCurrentCarItem() {
+      if (!isAdmin) {
+        showToast('กรุณากรอกรหัสผ่านเพื่อเข้าสู่โหมดผู้ดูแลระบบก่อนลบข้อมูล');
+        toggleAdminPasscodeModal();
+        return;
+      }
+
+      if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้ออก?')) {
+        deleteCarFromDB(currentSelectedCarId);
+        carsList = carsList.filter(c => c.id !== currentSelectedCarId);
+        updateSubModelDropdown();
+        renderGallery();
+        closeStudioModal();
+        showToast('ลบรายการเรียบร้อยแล้ว');
+      }
+    }
+
+    // 10. TOAST NOTIFICATION UTILITY
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
